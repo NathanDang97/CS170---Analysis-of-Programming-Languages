@@ -33,3 +33,36 @@
         ; if either of the check is true, the function should return true
         ((list? (car list)) (or (contains (car list) item) (contains (cdr list) item)))
         (#t (contains (cdr list) item))))
+
+; listleaves, defined so that (listleaves bt) lists the leaves in the binary tree bt,
+; using the representation discussed in class and the text. For example,
+; (listleaves '(a (b (c () ()) (d () (f () ()))) (e () ())))
+; returns,
+; (c f e)
+(define (listleaves bt)
+  ; if the 2th and 3th element of the list it null, then the 1st one is a leaf,
+  ; thus, construct a list containing this one leaf
+  (cond ((and (null? (nth bt 3)) (null? (nth bt 2))) (cons (car bt) '()))
+        ; if the 3th element is null (i.e. right subtree is empty), traverse the left subtree
+        ((null? (nth bt 3)) (listleaves (nth bt 2)))
+        ; if the 2th element is null (i.e. left subtree is empty), traverse the right subtree
+        ((null? (nth bt 2)) (listleaves (nth bt 3)))
+        ; if none of the subtrees is null, traverse both and append their lists of leaves
+        (#t (append (listleaves (nth bt 2)) (listleaves (nth bt 3))))))
+
+; bsearch, so that (bsearch item bst) returns #t if item is found in the binary search tree bst.
+; Assume that item is an integer and that the elements of the tree bst are integers.
+; Use the binary search algorithm (not contains!). Thus, for example,
+; (bsearch 3 '(5 (2 (1 () ()) (3 () (4 () ()))) (7 () ()))) returns #t, and
+; (bsearch 6 '(5 (2 (1 () ()) (3 () (4 () ()))) (7 () ()))) returns #f.
+(define (bsearch item bst)
+  ; if reach null (i.e. the item cannot be found), return false
+  (cond ((null? bst) #f)
+        ; if the the current node is greater than the item, move to the left subtree
+        ((> (car bst) item) (bsearch item (nth bst 2)))
+        ; if the current node is less than the item, move to the right subtree
+        ((< (car bst) item) (bsearch item (nth bst 3)))
+        ; if it's a hit, return true
+        ((equal? (car bst) item) #t)
+        ; defaut case, for my own convention
+        (#t #f)))
