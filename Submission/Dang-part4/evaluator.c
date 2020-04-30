@@ -173,10 +173,13 @@ Function: addUserDefVar()
 Private function that "conses" the user-defined variable to the
 global envinronment.
 ****************************************************************/
-static CellList addUserDefVar(CellList symbol, CellList value) {
+static CellList addUserDefVar(CellList source) {
+	// extract the symbol and the value
+	CellList symbol = car(cdr(source));
+	CellList value = car(cdr(cdr(source)));
 	// evaluate the value
 	CellList evaluatedValue = eval(value, globalEnv);
-	// get the pair
+	// create the pair
 	CellList pair = cons(symbol, cons(evaluatedValue, createSymbolNode("()")));
 	// add the pair to the environment
 	globalEnv = cons(pair, globalEnv);
@@ -205,13 +208,15 @@ CellList eval(CellList list, CellList environment) {
 		// check for exit prompt
 		if (strcmp(symbol, "exit") == 0) {
 			printf("Have a nice day!\n\n");
-			// freeList(globalEnv);
+			freeList(globalEnv);
+			free(sharpF);
+			free(sharpT);
 			exit(0);
 		}
 
 		// check for user-defined var
 		if (strcmp(symbol, "define") == 0) {
-			return addUserDefVar(car(cdr(list)), car(cdr(cdr(list))));
+			return addUserDefVar(list);
 		}
 
 		// getting the arguments for the functions
