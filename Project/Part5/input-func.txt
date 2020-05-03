@@ -1,0 +1,29 @@
+(define (member E L)
+    (cond ((null? L) #f)
+          ((equal? E (car L)) L)
+          (else (member E (cdr L)))))
+(member 'a '(b c a e f))
+
+(define (mylast L)
+    (cond ((null? (cdr L)) (car L))
+          (#t (last (cdr L)))))
+(mylast '(a b c))
+
+(define (squash l)
+    (cond ((null? l) #f)
+          ((symbol? l) (list l))
+          (else (append (squash (car l))
+                        (squash (cdr l))))))
+(squash '(a (b c) (d (e f)) g))
+
+(define l1 '(b c d a e f))
+(define l2 '(a b (c (d e) f) (g (h (k i))) (o p)))
+l1
+l2
+(squash l2)
+(member 'a l1)
+(mylast l2)
+
+(environment)
+(exit)
+
